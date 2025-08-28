@@ -1,32 +1,29 @@
 /* --- THEME & GLOBAL STYLES --- */
 :root {
     --primary-accent: #00f6ff;
-    --secondary-accent: #7a52f4;
-    --green-accent: #2cffb1;
-    --pink-accent: #ff7eb9;
-    --yellow-accent: #f9e2af;
-    --dark-bg: #0f172a;
-    --dark-surface: #1e293b;
-    --text-color: #e2e8f0;
-    --text-muted: #94a3b8;
-    --border-glow: rgba(122, 114, 234, 0.1);
+    --dark-bg: #0a0a0a;
+    --text-color: #f5f5f5;
+    --text-muted: #a0a0a0;
 }
 
-body, html { background-color: var(--dark-bg); overflow: hidden; }
-body { background-color: transparent; }
-#vanta-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+body, html {
+    background-color: var(--dark-bg);
+    /* A subtle geometric pattern to give the glass something to blur */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    overflow: hidden;
+    color: var(--text-color);
+}
 
 /* --- CORE GLASSMORPHISM EFFECT --- */
 .glass-effect {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(16px) saturate(120%);
-    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: 16px;
-    border: 1px solid var(--border-glow);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-    transition: background 0.3s ease, border 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
-.glass-effect:hover { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(122, 114, 234, 0.2); }
 
 /* --- PAGE LAYOUT & SCROLLING --- */
 #navbar-root { position: sticky; top: 0; z-index: 1000; }
@@ -34,52 +31,65 @@ main { height: calc(100vh - 80px); overflow-y: auto; }
 .main-container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
 
 /* --- BULMA OVERRIDES --- */
-.box, .list-item, .navbar, .menu-list a, .hero { background: transparent !important; border: none !important; box-shadow: none !important; }
-.modal-card { background-color: var(--dark-surface) !important; border: 1px solid var(--border-glow); }
+.box, .list-item, .navbar, .menu-list a, .hero, .modal-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
 .title, .subtitle, .label, strong { color: var(--text-color) !important; }
 .subtitle { color: var(--text-muted) !important; }
-.input, .textarea { background: rgba(15, 23, 42, 0.7) !important; border-color: rgba(122, 114, 234, 0.3) !important; color: var(--text-color) !important; }
-.button.is-primary { background: linear-gradient(90deg, var(--primary-accent) 0%, var(--secondary-accent) 100%); color: white !important; font-weight: bold; border: none; transition: all 0.3s ease; background-size: 200% auto; }
-.button.is-primary:hover { background-position: right center; box-shadow: 0 0 20px rgba(0, 246, 255, 0.5); }
-.menu-list a.is-active { background: linear-gradient(90deg, rgba(0, 246, 255, 0.2) 0%, rgba(122, 82, 244, 0.1) 100%) !important; color: var(--primary-accent) !important; border-left: 3px solid var(--primary-accent); }
+.input, .textarea {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-color) !important;
+}
+.button.is-primary {
+    background-color: var(--primary-accent) !important;
+    color: #0a0a0a !important;
+    font-weight: bold;
+    border: none;
+    transition: all 0.2s ease;
+}
+.button.is-primary:hover { box-shadow: 0 0 15px var(--primary-accent); }
+.button.is-light {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-color) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+.menu-list a.is-active {
+    background: rgba(0, 246, 255, 0.15) !important;
+    color: var(--primary-accent) !important;
+    border-left: 3px solid var(--primary-accent);
+}
 
 /* --- ARCANE CODEX SKILL MAP --- */
-#skill-map-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 10; /* Below the navbar and sidebar */
-}
+#skill-map-page { position: relative; width: 100%; height: 100%; background-color: transparent; }
 #skill-map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-/* Style for the sidebar when it's floating over the map */
-.sidebar-on-map {
-    position: fixed;
-    top: 100px; /* Position it below the navbar */
-    left: 20px;
-    z-index: 500;
-    width: 250px;
-}
-
 .skill-node {
     position: absolute; display: flex; align-items: center; justify-content: center;
-    background-color: var(--dark-surface); color: var(--text-color);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    color: var(--text-color);
     box-shadow: 0 5px 15px rgba(0,0,0,0.5); text-align: center;
-    cursor: pointer; transition: all 0.4s ease; user-select: none; font-weight: bold;
-    opacity: 0.7; filter: saturate(0.5); border: 2px solid #475569;
+    cursor: pointer; transition: all 0.4s ease; user-select: none;
+    opacity: 0.8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.skill-node.is-central { width: 150px; height: 150px; font-size: 2.5em; border-radius: 28px; border: 3px solid var(--primary-accent); box-shadow: 0 0 25px var(--primary-accent), inset 0 0 15px rgba(0, 246, 255, 0.2); opacity: 1; filter: saturate(1); }
+.skill-node.is-central { width: 150px; height: 150px; font-size: 2.5em; border-radius: 28px; border: 2px solid var(--primary-accent); box-shadow: 0 0 25px var(--primary-accent); opacity: 1; }
 .skill-node.is-category { width: 90px; height: 90px; font-size: 2.2em; border-radius: 20px; }
 .skill-node.is-skill { width: 60px; height: 60px; font-size: 1.8em; border-radius: 12px; }
-#skill-map-container.is-focused .skill-node { opacity: 0.3; filter: saturate(0); }
-.skill-node.is-highlighted { opacity: 1; filter: saturate(1); }
-.skill-node.is-focused { transform: translate(-50%, -50%) scale(1.1) !important; border-color: currentColor; box-shadow: 0 0 20px currentColor; opacity: 1; filter: saturate(1); }
+
+/* Focus & Highlighting Effects */
+#skill-map-container.is-focused .skill-node { opacity: 0.3; filter: grayscale(80%); }
+.skill-node.is-highlighted { opacity: 1; filter: grayscale(0%); }
+.skill-node.is-focused {
+    transform: translate(-50%, -50%) scale(1.1) !important;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 20px var(--primary-accent);
+    opacity: 1;
+    filter: grayscale(0%);
+    color: var(--primary-accent);
+}
 .leader-line { transition: opacity 0.4s ease; }
 .leader-line.is-hidden { opacity: 0.1 !important; }
 .leader-line.is-highlighted { opacity: 1 !important; }
-.skill-node[data-category="Programming"] { color: var(--primary-accent); }
-.skill-node[data-category="Design"] { color: var(--pink-accent); }
-.skill-node[data-category="Communication"] { color: var(--green-accent); }
-.skill-node[data-category="DevOps"] { color: var(--yellow-accent); }
