@@ -18,36 +18,45 @@ const routes = {
 
 async function router() {
     const path = window.location.hash || '#/dashboard';
-    const renderFunction = routes[path];
-
+    
     navbarRoot.innerHTML = '';
     app.innerHTML = '';
 
-    if (renderFunction && state.user) {
+    if (state.user) {
         navbarRoot.appendChild(renderNavbar(state.user));
 
-        const mainContent = document.createElement('div');
-        mainContent.className = 'columns';
-
-        const sidebarContainer = document.createElement('div');
-        sidebarContainer.className = 'column is-narrow';
-        sidebarContainer.appendChild(renderSidebar(path));
-
-        const pageContainer = document.createElement('div');
-        pageContainer.className = 'column';
-        pageContainer.appendChild(renderFunction());
-
-        mainContent.appendChild(sidebarContainer);
-        mainContent.appendChild(pageContainer);
-        app.appendChild(mainContent);
-
         if (path === '#/skillmap') {
-            requestAnimationFrame(() => {
-                initializeSkillMap();
-            });
+            document.body.style.overflow = 'hidden';
+            app.appendChild(renderSkillMapPage());
+
+            const sidebar = renderSidebar(path);
+            sidebar.classList.add('sidebar-on-map');
+            app.appendChild(sidebar);
+            
+            requestAnimationFrame(() => initializeSkillMap());
+
+        } else {
+            document.body.style.overflow = 'auto';
+            const mainContent = document.createElement('div');
+            mainContent.className = 'columns';
+
+            const sidebarContainer = document.createElement('div');
+            sidebarContainer.className = 'column is-narrow';
+            sidebarContainer.appendChild(renderSidebar(path));
+
+            const pageContainer = document.createElement('div');
+            pageContainer.className = 'column';
+            pageContainer.appendChild(renderDashboardPage());
+
+            mainContent.appendChild(sidebarContainer);
+            mainContent.appendChild(pageContainer);
+            app.appendChild(mainContent);
         }
 
-        if (!vantaEffect) {
+        if (path === '#/skillmap' && vantaEffect) {
+            vantaEffect.destroy();
+            vantaEffect = null;
+        } else if (path !== '#/skillmap' && !vantaEffect) {
             vantaEffect = VANTA.WAVES({
                 el: "#vanta-bg",
                 mouseControls: true,
@@ -76,12 +85,9 @@ async function router() {
 app.addEventListener('click', async (event) => {
     const target = event.target.closest('[data-action]');
     if (!target) return;
-
     const { action, id } = target.dataset;
-
     switch (action) {
-        case 'signup':
-        case 'signin': {
+        case 'signup': case 'signin': {
             const form = document.getElementById('auth-form');
             const authAction = action === 'signin' ? signIn : signUp;
             const { error } = await authAction(form.email.value, form.password.value, form.fullName?.value);
@@ -89,23 +95,14 @@ app.addEventListener('click', async (event) => {
             else if (action === 'signup') notie.alert({ type: 'success', text: 'Success! Please check your email to verify.' });
             break;
         }
-        case 'signout':
-            await signOut();
-            window.location.hash = '';
-            break;
-        case 'edit-cap':
-        case 'edit-cap-from-modal':
+        case 'signout': await signOut(); window.location.hash = ''; break;
+        case 'edit-cap': case 'edit-cap-from-modal':
             state.editingCapabilityId = id;
-            if (action === 'edit-cap-from-modal') {
-                target.closest('.modal').classList.remove('is-active');
-            }
+            if (action === 'edit-cap-from-modal') target.closest('.modal').classList.remove('is-active');
             updateCapabilityForm(state.capabilities.find(c => c.id === id));
             document.querySelector('#capability-form-box').scrollIntoView({ behavior: 'smooth' });
             break;
-        case 'cancel-edit-cap':
-            state.editingCapabilityId = null;
-            updateCapabilityForm(null);
-            break;
+        case 'cancel-edit-cap': state.editingCapabilityId = null; updateCapabilityForm(null); break;
         case 'delete-cap':
             notie.confirm({ text: 'Are you sure?' }, async () => {
                 const { error } = await api.deleteCapability(id);
@@ -120,10 +117,7 @@ app.addEventListener('click', async (event) => {
             updateProjectForm(state.projects.find(p => p.id === id));
             document.querySelector('#project-form-box').scrollIntoView({ behavior: 'smooth' });
             break;
-        case 'cancel-edit-proj':
-            state.editingProjectId = null;
-            updateProjectForm(null);
-            break;
+        case 'cancel-edit-proj': state.editingProjectId = null; updateProjectForm(null); break;
         case 'delete-proj':
             notie.confirm({ text: 'Are you sure?' }, async () => {
                 const { error } = await api.deleteProject(id);
@@ -143,9 +137,7 @@ app.addEventListener('click', async (event) => {
             modal.classList.add('is-active');
             break;
         }
-        case 'close-modal':
-            target.closest('.modal').classList.remove('is-active');
-            break;
+        case 'close-modal': target.closest('.modal').classList.remove('is-active'); break;
     }
 });
 
@@ -154,53 +146,40 @@ app.addEventListener('submit', async (event) => {
     const form = event.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
     if (form.id === 'capability-form') {
         const capabilityData = {
             user_id: state.user.id,
             skill_name: data.skill_name,
             category: data.category,
             skill_description: data.skill_description,
-            skill_score: data.skill_score ? parseInt(data.skill_score) : null
+            skill_score: data.skill_score ? parseInt(data.skill_score) : null,
+            icon: data.icon
         };
-        if (state.editingCapabilityId) {
-            capabilityData.id = state.editingCapabilityId;
-        }
-
+        if (state.editingCapabilityId) capabilityData.id = state.editingCapabilityId;
         const { data: savedCapability, error } = await api.saveCapability(capabilityData);
         if (error) return notie.alert({ type: 'error', text: `Error: ${error.message}` });
-
         if (state.editingCapabilityId) {
             const index = state.capabilities.findIndex(c => c.id === state.editingCapabilityId);
             if (index !== -1) state.capabilities[index] = savedCapability;
         } else {
             state.capabilities.push(savedCapability);
         }
-
         state.editingCapabilityId = null;
         notie.alert({ type: 'success', text: 'Capability saved!' });
         router();
     }
-
     if (form.id === 'project-form') {
         const projectDetails = {
             user_id: state.user.id,
             title: data.title,
             description: data.description
         };
-        if (state.editingProjectId) {
-            projectDetails.id = state.editingProjectId;
-        }
-
+        if (state.editingProjectId) projectDetails.id = state.editingProjectId;
         const selectedCapIds = formData.getAll('capabilities');
-        const { data: savedProject, error } = await api.saveProject(projectDetails, selectedCapIds);
+        const { error } = await api.saveProject(projectDetails, selectedCapIds);
         if (error) return notie.alert({ type: 'error', text: `Error: ${error.message}` });
-
-        const { data: updatedUserData } = await api.fetchUserData(state.user.id);
-        if (updatedUserData) {
-            state.projects = updatedUserData.projects || [];
-        }
-
+        const updatedUserData = await api.fetchUserData(state.user.id);
+        if (updatedUserData) state.projects = updatedUserData.projects || [];
         state.editingProjectId = null;
         notie.alert({ type: 'success', text: 'Project saved!' });
         router();
@@ -222,8 +201,6 @@ onAuthStateChange(async (user) => {
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', () => {
-    if (!window.location.hash) {
-        window.location.hash = '#/dashboard';
-    }
+    if (!window.location.hash) window.location.hash = '#/dashboard';
     router();
 });
