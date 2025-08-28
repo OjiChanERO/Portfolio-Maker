@@ -12,18 +12,13 @@
     --border-glow: rgba(122, 114, 234, 0.1);
 }
 
-body, html {
-    background-color: var(--dark-bg);
-    overflow: hidden;
-}
+body, html { background-color: var(--dark-bg); overflow: hidden; }
 body { background-color: transparent; }
-
-/* --- ANIMATED BACKGROUND --- */
 #vanta-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
 
 /* --- CORE GLASSMORPHISM EFFECT --- */
 .glass-effect {
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(16px) saturate(120%);
     -webkit-backdrop-filter: blur(16px) saturate(120%);
     border-radius: 16px;
@@ -31,7 +26,7 @@ body { background-color: transparent; }
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     transition: background 0.3s ease, border 0.3s ease;
 }
-.glass-effect:hover { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(122, 114, 234, 0.2); }
+.glass-effect:hover { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(122, 114, 234, 0.2); }
 
 /* --- PAGE LAYOUT & SCROLLING --- */
 #navbar-root { position: sticky; top: 0; z-index: 1000; }
@@ -46,50 +41,45 @@ main { height: calc(100vh - 80px); overflow-y: auto; }
 .input, .textarea { background: rgba(15, 23, 42, 0.7) !important; border-color: rgba(122, 114, 234, 0.3) !important; color: var(--text-color) !important; }
 .button.is-primary { background: linear-gradient(90deg, var(--primary-accent) 0%, var(--secondary-accent) 100%); color: white !important; font-weight: bold; border: none; transition: all 0.3s ease; background-size: 200% auto; }
 .button.is-primary:hover { background-position: right center; box-shadow: 0 0 20px rgba(0, 246, 255, 0.5); }
-.button.is-light { background-color: rgba(255, 255, 255, 0.1) !important; color: var(--text-color) !important; border-color: rgba(255, 255, 255, 0.2) !important; }
 .menu-list a.is-active { background: linear-gradient(90deg, rgba(0, 246, 255, 0.2) 0%, rgba(122, 82, 244, 0.1) 100%) !important; color: var(--primary-accent) !important; border-left: 3px solid var(--primary-accent); }
 
-/* --- VORTEX SKILL MAP --- */
-#skill-map-page { position: relative; width: 100%; height: 100%; }
-#skill-map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: filter 0.5s ease; }
-#skill-map-container.is-focused { filter: saturate(0.3); } /* Fade out effect for focus mode */
+/* --- ARCANE CODEX SKILL MAP --- */
+#skill-map-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10; /* Below the navbar and sidebar */
+}
+#skill-map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* Style for the sidebar when it's floating over the map */
+.sidebar-on-map {
+    position: fixed;
+    top: 100px; /* Position it below the navbar */
+    left: 20px;
+    z-index: 500;
+    width: 250px;
+}
 
 .skill-node {
     position: absolute; display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-    color: var(--text-color); border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    text-align: center; cursor: pointer;
-    transition: all 0.4s ease;
-    user-select: none; font-weight: bold;
-    border: 3px solid rgba(148, 163, 184, 0.3);
-    background: rgba(30, 41, 59, 0.5);
-    text-shadow: 0 0 5px black;
-    animation: pulse 4s infinite ease-in-out;
+    background-color: var(--dark-surface); color: var(--text-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); text-align: center;
+    cursor: pointer; transition: all 0.4s ease; user-select: none; font-weight: bold;
+    opacity: 0.7; filter: saturate(0.5); border: 2px solid #475569;
 }
-.skill-node.is-central {
-    font-size: 2.5em; border: 4px solid var(--primary-accent);
-    box-shadow: 0 0 25px var(--primary-accent), inset 0 0 15px rgba(0, 246, 255, 0.3);
-    animation: pulse-central 4s infinite ease-in-out;
-}
-.skill-node.is-focused {
-    transform: scale(1.15) !important; 
-    border-color: currentColor;
-    box-shadow: 0 0 25px currentColor;
-    animation-play-state: paused;
-    filter: saturate(1.5) !important;
-}
+.skill-node.is-central { width: 150px; height: 150px; font-size: 2.5em; border-radius: 28px; border: 3px solid var(--primary-accent); box-shadow: 0 0 25px var(--primary-accent), inset 0 0 15px rgba(0, 246, 255, 0.2); opacity: 1; filter: saturate(1); }
+.skill-node.is-category { width: 90px; height: 90px; font-size: 2.2em; border-radius: 20px; }
+.skill-node.is-skill { width: 60px; height: 60px; font-size: 1.8em; border-radius: 12px; }
+#skill-map-container.is-focused .skill-node { opacity: 0.3; filter: saturate(0); }
+.skill-node.is-highlighted { opacity: 1; filter: saturate(1); }
+.skill-node.is-focused { transform: translate(-50%, -50%) scale(1.1) !important; border-color: currentColor; box-shadow: 0 0 20px currentColor; opacity: 1; filter: saturate(1); }
+.leader-line { transition: opacity 0.4s ease; }
+.leader-line.is-hidden { opacity: 0.1 !important; }
+.leader-line.is-highlighted { opacity: 1 !important; }
 .skill-node[data-category="Programming"] { color: var(--primary-accent); }
 .skill-node[data-category="Design"] { color: var(--pink-accent); }
 .skill-node[data-category="Communication"] { color: var(--green-accent); }
 .skill-node[data-category="DevOps"] { color: var(--yellow-accent); }
-
-.leader-line { transition: opacity 0.4s ease; }
-.leader-line.is-hidden { opacity: 0.1 !important; }
-.leader-line.is-focused {
-    opacity: 1 !important;
-    background: linear-gradient(90deg, var(--secondary-accent) 0%, var(--primary-accent) 100%);
-}
-
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-@keyframes pulse-central { 0%, 100% { transform: scale(1); box-shadow: 0 0 25px var(--primary-accent), inset 0 0 15px rgba(0, 246, 255, 0.3); } 50% { transform: scale(1.05); box-shadow: 0 0 35px var(--primary-accent), inset 0 0 25px rgba(0, 246, 255, 0.5); } }
