@@ -9,7 +9,6 @@ import { renderSidebar } from './components/Sidebar.js';
 
 const navbarRoot = document.getElementById('navbar-root');
 const app = document.getElementById('app');
-let vantaEffect = null;
 
 const routes = {
     '#/dashboard': renderDashboardPage,
@@ -28,57 +27,26 @@ async function router() {
         if (path === '#/skillmap') {
             document.body.style.overflow = 'hidden';
             app.appendChild(renderSkillMapPage());
-
             const sidebar = renderSidebar(path);
             sidebar.classList.add('sidebar-on-map');
             app.appendChild(sidebar);
-            
             requestAnimationFrame(() => initializeSkillMap());
-
         } else {
             document.body.style.overflow = 'auto';
             const mainContent = document.createElement('div');
             mainContent.className = 'columns';
-
             const sidebarContainer = document.createElement('div');
             sidebarContainer.className = 'column is-narrow';
             sidebarContainer.appendChild(renderSidebar(path));
-
             const pageContainer = document.createElement('div');
             pageContainer.className = 'column';
             pageContainer.appendChild(renderDashboardPage());
-
             mainContent.appendChild(sidebarContainer);
             mainContent.appendChild(pageContainer);
             app.appendChild(mainContent);
         }
-
-        if (path === '#/skillmap' && vantaEffect) {
-            vantaEffect.destroy();
-            vantaEffect = null;
-        } else if (path !== '#/skillmap' && !vantaEffect) {
-            vantaEffect = VANTA.WAVES({
-                el: "#vanta-bg",
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                scale: 1.00,
-                scaleMobile: 1.00,
-                color: 0x0f172a,
-                shininess: 30.00,
-                waveHeight: 15.00,
-                waveSpeed: 0.75,
-                zoom: 0.85
-            });
-        }
     } else {
         app.appendChild(renderAuthView());
-        if (vantaEffect) {
-            vantaEffect.destroy();
-            vantaEffect = null;
-        }
     }
 }
 
