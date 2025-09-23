@@ -1,4 +1,5 @@
 // js/components/AuthView.js
+// Renders the Login/Sign up page
 export function renderAuthView() {
     const container = document.createElement('div');
     container.className = 'main-container';
@@ -12,7 +13,6 @@ export function renderAuthView() {
                         <div class="field">
                             <label class="label">Full Name (for signup)</label>
                             <div class="control has-icons-left">
-                                <!-- ADDED autocomplete="name" -->
                                 <input class="input" type="text" name="fullName" placeholder="e.g. Alex Smith" autocomplete="name">
                                 <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
                             </div>
@@ -20,7 +20,6 @@ export function renderAuthView() {
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control has-icons-left">
-                                <!-- ADDED autocomplete="email" -->
                                 <input class="input" type="email" name="email" placeholder="e.g. alex@example.com" required autocomplete="email">
                                 <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
                             </div>
@@ -28,7 +27,6 @@ export function renderAuthView() {
                         <div class="field">
                             <label class="label">Password</label>
                             <div class="control has-icons-left">
-                                <!-- ADDED autocomplete="current-password" -->
                                 <input class="input" type="password" name="password" placeholder="********" required autocomplete="current-password">
                                 <span class="icon is-small is-left"><i class="fas fa-lock"></i></span>
                             </div>
