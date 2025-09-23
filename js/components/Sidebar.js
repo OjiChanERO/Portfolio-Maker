@@ -1,6 +1,7 @@
 export function renderSidebar(activeRoute) {
     const container = document.createElement('aside');
     container.className = 'menu p-4 glass-effect';
+    container.style.minHeight = '500px';
     container.innerHTML = `
         <p class="menu-label">
             Manage
