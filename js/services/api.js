@@ -1,109 +1,161 @@
-// js/services/api.js
 import { supabaseClient } from './auth.js';
 
-/**
- * Fetches all user data by running three separate, concurrent queries and combining the results.
- * @param {string} userId - The UUID of the logged-in user.
- * @returns {Promise<object|null>} The user's complete data object, or null if an error occurs.
- */
+// Fetches all data needed for the application in one go.
 export async function fetchUserData(userId) {
     try {
-        // Use Promise.all to run all three network requests at the same time for maximum speed.
-        const [profileRes, projectsRes, capabilitiesRes] = await Promise.all([
-            // Query 1: Get the user's profile
+        const [profileRes, capabilitiesRes, skillsRes, userSkillsRes, projectsRes] = await Promise.all([
             supabaseClient.from('profiles').select('*').eq('id', userId).single(),
-            
-            // Query 2: Get the user's projects and their linked capabilities
-            supabaseClient.from('projects').select('*, project_capabilities(capabilities(id, skill_name))').eq('user_id', userId),
-            
-            // Query 3: Get all of the user's capabilities
-            supabaseClient.from('capabilities').select('*').eq('user_id', userId)
+            supabaseClient.from('capabilities').select('*'),
+            supabaseClient.from('skills').select('*').eq('user_id', userId),
+            supabaseClient.from('user_skills').select('*').eq('user_id', userId),
+            supabaseClient.from('projects').select('*, project_skills(skill_id)').eq('user_id', userId)
         ]);
 
-        // Check for errors in each response
-        if (profileRes.error && profileRes.error.code !== 'PGRST116') throw profileRes.error;
-        if (projectsRes.error) throw projectsRes.error;
+        // Handle case where profile doesn't exist yet (not an error)
+        if (profileRes.error && profileRes.error.code !== 'PGRST116') {
+            throw profileRes.error;
+        }
         if (capabilitiesRes.error) throw capabilitiesRes.error;
+        if (skillsRes.error) throw skillsRes.error;
+        if (userSkillsRes.error) throw userSkillsRes.error;
+        if (projectsRes.error) throw projectsRes.error;
 
-        // Combine the results into a single object that the rest of the app can use
-        const fullProfile = profileRes.data || { id: userId }; // Create a shell profile if one doesn't exist yet
-        fullProfile.projects = projectsRes.data || [];
-        fullProfile.capabilities = capabilitiesRes.data || [];
-        
-        return fullProfile;
-
+        return {
+            profile: profileRes.data || { id: userId, full_name: '', bio: '', is_public: false },
+            capabilities: capabilitiesRes.data || [],
+            skills: skillsRes.data || [],
+            userSkills: userSkillsRes.data || [],
+            projects: projectsRes.data || []
+        };
     } catch (error) {
         console.error("Error fetching user data:", error);
-        notie.alert({ type: 'error', text: 'Could not load profile data. Please check the console.' });
+        notie.alert({ type: 'error', text: 'Could not load user data.' });
         return null;
     }
 }
 
-/**
- * Creates or updates a capability in the database.
- * @param {object} capabilityData - The capability object to save. Must include user_id. Can optionally include id for updates.
- * @returns {Promise} The result of the Supabase upsert call.
- */
-export async function saveCapability(capabilityData) {
-    return await supabaseClient.from('capabilities').upsert(capabilityData).select().single();
+// Fetches public user data for sharing
+export async function fetchPublicUserData(userId) {
+    try {
+        const [profileRes, skillsRes, userSkillsRes, capabilitiesRes, projectsRes] = await Promise.all([
+            supabaseClient.from('profiles').select('*').eq('id', userId).eq('is_public', true).single(),
+            supabaseClient.from('skills').select('*').eq('user_id', userId),
+            supabaseClient.from('user_skills').select('*').eq('user_id', userId),
+            supabaseClient.from('capabilities').select('*'),
+            supabaseClient.from('projects').select('*').eq('user_id', userId)
+        ]);
+
+        if (profileRes.error) {
+            return null; // Profile not found or not public
+        }
+
+        return {
+            profile: profileRes.data,
+            skills: skillsRes.data || [],
+            userSkills: userSkillsRes.data || [],
+            capabilities: capabilitiesRes.data || [],
+            projects: projectsRes.data || []
+        };
+    } catch (error) {
+        console.error("Error fetching public user data:", error);
+        return null;
+    }
 }
 
-/**
- * Deletes a capability from the database by its ID.
- * @param {string} id - The UUID of the capability to delete.
- * @returns {Promise} The result of the Supabase delete call.
- */
-export async function deleteCapability(id) {
-    return await supabaseClient.from('capabilities').delete().eq('id', id);
-}
+// Saves a skill and its associated score in two steps.
+export async function saveSkill(formData, editingSkillId, userId) {
+    const skillDetails = {
+        user_id: userId,
+        name: formData.name,
+        capability_id: parseInt(formData.capability_id),
+        icon: formData.icon,
+        description: formData.description,
+    };
+    if (editingSkillId) skillDetails.id = editingSkillId;
 
-/**
- * Saves a project and handles its many-to-many relationship with capabilities.
- * @param {object} projectDetails - The project object to save. Must include user_id. Can optionally include id for updates.
- * @param {string[]} selectedCapIds - An array of capability UUIDs to link to this project.
- * @returns {Promise<object>} An object containing either the saved project data or an error.
- */
-export async function saveProject(projectDetails, selectedCapIds) {
-    // Step 1: Upsert (Update or Insert) the project details.
-    const { data: savedProject, error: projectError } = await supabaseClient
-        .from('projects')
-        .upsert(projectDetails)
+    const { data: savedSkill, error: skillError } = await supabaseClient
+        .from('skills')
+        .upsert(skillDetails)
         .select()
         .single();
+    
+    if (skillError) return { error: skillError };
 
-    if (projectError) {
-        console.error("Error saving project:", projectError);
-        return { error: projectError };
+    let savedUserSkill = null;
+    if (formData.score && formData.score !== '') {
+        const scoreDetails = {
+            user_id: userId,
+            skill_id: savedSkill.id,
+            score: parseInt(formData.score)
+        };
+        const { data, error: scoreError } = await supabaseClient
+            .from('user_skills')
+            .upsert(scoreDetails, { onConflict: 'user_id, skill_id' })
+            .select()
+            .single();
+        
+        if (scoreError) return { error: scoreError };
+        savedUserSkill = data;
     }
 
-    // Step 2: Delete all existing capability links for this project to ensure a clean slate.
-    const { error: deleteError } = await supabaseClient.from('project_capabilities').delete().eq('project_id', savedProject.id);
-    if (deleteError) {
-        console.error("Error deleting old links:", deleteError);
-        return { error: deleteError };
-    }
+    return { data: { skill: savedSkill, userSkill: savedUserSkill } };
+}
 
-    // Step 3: Insert the new links if any capabilities were selected.
-    if (selectedCapIds && selectedCapIds.length > 0) {
-        const linksToInsert = selectedCapIds.map(capId => ({
+// Deletes a skill. The database cascade will handle deleting related scores and project links.
+export async function deleteSkill(skillId) {
+    return await supabaseClient.from('skills').delete().eq('id', skillId);
+}
+
+// Saves a project and its linked skills.
+export async function saveProject(projectDetails, selectedSkillIds, editingProjectId, userId) {
+    const projectData = { ...projectDetails, user_id: userId };
+    if (editingProjectId) projectData.id = editingProjectId;
+    
+    const { data: savedProject, error: projectError } = await supabaseClient
+        .from('projects')
+        .upsert(projectData)
+        .select()
+        .single();
+    
+    if (projectError) return { error: projectError };
+
+    // Clear existing project skills first
+    const { error: deleteError } = await supabaseClient
+        .from('project_skills')
+        .delete()
+        .eq('project_id', savedProject.id);
+    
+    if (deleteError) return { error: deleteError };
+
+    // Insert new project skills if any are selected
+    if (selectedSkillIds && selectedSkillIds.length > 0) {
+        const linksToInsert = selectedSkillIds.map(skillId => ({
             project_id: savedProject.id,
-            capability_id: capId
+            skill_id: parseInt(skillId)
         }));
-        const { error: insertError } = await supabaseClient.from('project_capabilities').insert(linksToInsert);
-        if (insertError) {
-            console.error("Error inserting new links:", insertError);
-            return { error: insertError };
-        }
+        
+        const { error: insertError } = await supabaseClient
+            .from('project_skills')
+            .insert(linksToInsert);
+        
+        if (insertError) return { error: insertError };
     }
     
     return { data: savedProject };
 }
 
-/**
- * Deletes a project from the database by its ID.
- * @param {string} id - The UUID of the project to delete.
- * @returns {Promise} The result of the Supabase delete call.
- */
-export async function deleteProject(id) {
-    return await supabaseClient.from('projects').delete().eq('id', id);
+// Deletes a project.
+export async function deleteProject(projectId) {
+    return await supabaseClient.from('projects').delete().eq('id', projectId);
+}
+
+// Updates user profile
+export async function updateProfile(profileData, userId) {
+    const { data, error } = await supabaseClient
+        .from('profiles')
+        .upsert({ ...profileData, id: userId })
+        .select()
+        .single();
+    
+    return { data, error };
 }
