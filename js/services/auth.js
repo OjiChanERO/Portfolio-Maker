@@ -1,7 +1,6 @@
 // js/services/auth.js
-
-const SUPABASE_URL = 'https://esahjsbduuwopoqktynq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzYWhqc2JkdXV3b3BvcWt0eW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3MzY5ODYsImV4cCI6MjA3MTMxMjk4Nn0.uAw8vS8YfPNlkbwV8cd1jY2MhKeQQvbIetdD0XxUGQg';
+const SUPABASE_URL = 'https://mznapeconwimqtqwrwne.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16bmFwZWNvbndpbXF0cXdyd25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwNjcxNTUsImV4cCI6MjA3MzY0MzE1NX0.rWvrmuuqirJkCL3EKyQHU_EFlxJUWdSWPJBHd0cWuE4';
 
 const { createClient } = supabase;
 
@@ -31,4 +30,9 @@ export function onAuthStateChange(callback) {
     return supabaseClient.auth.onAuthStateChange((event, session) => {
         callback(session?.user || null);
     });
+}
+
+export async function getCurrentUser() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    return user;
 }
