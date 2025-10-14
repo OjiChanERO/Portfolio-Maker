@@ -1,4 +1,4 @@
-import state from '../state.js';
+import state, { stateUtils } from '../state.js';
 
 // Main function that assembles and renders the entire dashboard page.
 export function renderDashboardPage() {
@@ -12,7 +12,7 @@ export function renderDashboardPage() {
         : 0;
 
     const expertSkills = userSkills.filter(us => us.score >= 80).length;
-    const improvingSkills = userSkills.filter(us => us.score >= 60 && us.score < 80).length;
+    const intermediateSkills = userSkills.filter(us => us.score >= 60 && us.score < 80).length;
     const beginnerSkills = userSkills.filter(us => us.score < 60).length;
 
     const topCategory = capabilities.map(cat => {
@@ -26,6 +26,10 @@ export function renderDashboardPage() {
         return { ...cat, score: avgCatScore, count: catSkills.length };
     }).sort((a, b) => b.score - a.score)[0];
 
+    const completionPercentage = skills.length > 0 
+        ? Math.round((userSkills.length / skills.length) * 100)
+        : 0;
+
     const statsPanel = `
         <div class="hero-section">
             <div class="hero-content">
@@ -33,20 +37,24 @@ export function renderDashboardPage() {
                     <div class="level-left">
                         <div class="level-item">
                             <div>
-                                <h1 class="title is-2 mb-2">
+                                <h1 class="title is-2 mb-2 gradient-text">
                                     Welcome back, ${profile?.full_name?.split(' ')[0] || 'Developer'}!
                                 </h1>
-                                <p class="subtitle is-5">Here's your skill development overview</p>
+                                <p class="subtitle is-5 has-text-grey-light">Here's your skill development overview</p>
                             </div>
                         </div>
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <div class="notification-badge ${skills.length === 0 ? 'is-active' : ''}">
-                                <span class="icon"><i class="fas fa-lightbulb"></i></span>
-                                <span class="badge-text">
-                                    ${skills.length === 0 ? 'Ready to start?' : 'Keep growing!'}
-                                </span>
+                            <div class="notification-badge-container">
+                                <div class="notification-badge ${skills.length === 0 ? 'is-active' : ''}">
+                                    <span class="icon">
+                                        <i class="fas fa-${skills.length === 0 ? 'rocket' : 'chart-line'}"></i>
+                                    </span>
+                                    <span class="badge-text">
+                                        ${skills.length === 0 ? 'Ready to start?' : `${completionPercentage}% Complete`}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -61,14 +69,19 @@ export function renderDashboardPage() {
                         <i class="fas fa-code"></i>
                     </div>
                     <div class="stat-trend ${skills.length > 0 ? 'up' : ''}">
-                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-${skills.length > 0 ? 'up' : 'plus'}"></i>
                     </div>
                 </div>
                 <div class="stat-content">
                     <div class="stat-number">${skills.length}</div>
                     <div class="stat-label">Total Skills</div>
                     <div class="stat-sublabel">
-                        ${expertSkills > 0 ? `${expertSkills} expert level` : 'Add your first skill'}
+                        ${expertSkills > 0 
+                            ? `${expertSkills} expert level` 
+                            : skills.length > 0 
+                            ? 'Keep building' 
+                            : 'Add your first skill'
+                        }
                     </div>
                 </div>
             </div>
@@ -153,7 +166,7 @@ export function renderDashboardPage() {
                         </div>
                         <div class="insight-content">
                             <h4 class="insight-title">Developing</h4>
-                            <p class="insight-number">${improvingSkills}</p>
+                            <p class="insight-number">${intermediateSkills}</p>
                             <p class="insight-description">Skills in the 60-79 range</p>
                         </div>
                     </div>
@@ -172,24 +185,48 @@ export function renderDashboardPage() {
         ` : ''}
     `;
 
-    // Enhanced tabs with better design
+    // Enhanced tabs with better design and accessibility
     const tabs = `
         <div class="enhanced-tabs">
-            <div class="tab-list">
-                <button class="tab-button ${activeDashboardTab === 'skills' ? 'active' : ''}" data-action="switch-tab" data-tab="skills">
+            <div class="tab-list" role="tablist">
+                <button 
+                    class="tab-button ${activeDashboardTab === 'skills' ? 'active' : ''}" 
+                    data-action="switch-tab" 
+                    data-tab="skills"
+                    role="tab"
+                    aria-selected="${activeDashboardTab === 'skills'}"
+                    aria-controls="skills-panel"
+                >
                     <span class="tab-icon"><i class="fas fa-code"></i></span>
                     <span class="tab-label">Skills</span>
                     <span class="tab-badge">${skills.length}</span>
                 </button>
-                <button class="tab-button ${activeDashboardTab === 'projects' ? 'active' : ''}" data-action="switch-tab" data-tab="projects">
+                <button 
+                    class="tab-button ${activeDashboardTab === 'projects' ? 'active' : ''}" 
+                    data-action="switch-tab" 
+                    data-tab="projects"
+                    role="tab"
+                    aria-selected="${activeDashboardTab === 'projects'}"
+                    aria-controls="projects-panel"
+                >
                     <span class="tab-icon"><i class="fas fa-project-diagram"></i></span>
                     <span class="tab-label">Projects</span>
                     <span class="tab-badge">${projects.length}</span>
                 </button>
-                <button class="tab-button ${activeDashboardTab === 'profile' ? 'active' : ''}" data-action="switch-tab" data-tab="profile">
+                <button 
+                    class="tab-button ${activeDashboardTab === 'profile' ? 'active' : ''}" 
+                    data-action="switch-tab" 
+                    data-tab="profile"
+                    role="tab"
+                    aria-selected="${activeDashboardTab === 'profile'}"
+                    aria-controls="profile-panel"
+                >
                     <span class="tab-icon"><i class="fas fa-user"></i></span>
                     <span class="tab-label">Profile</span>
-                    <span class="tab-badge ${profile?.is_public ? '✓' : '!'}" title="${profile?.is_public ? 'Public' : 'Private'}"></span>
+                    <span class="tab-badge ${profile?.is_public ? 'public' : 'private'}" 
+                          title="${profile?.is_public ? 'Public Portfolio' : 'Private Portfolio'}">
+                        ${profile?.is_public ? '✓' : '!'}
+                    </span>
                 </button>
             </div>
         </div>
@@ -207,24 +244,21 @@ export function renderDashboardPage() {
     container.innerHTML = `
         ${statsPanel}
         ${tabs}
-        <div class="tab-content-enhanced">${tabContent}</div>
+        <div class="tab-content-enhanced" role="tabpanel" id="${activeDashboardTab}-panel">${tabContent}</div>
     `;
-
-    // Add sorting functionality for skills
-    setTimeout(() => {
-        const sortSelect = document.getElementById('skill-sort');
-        if (sortSelect) {
-            sortSelect.addEventListener('change', (e) => {
-                const sortBy = e.target.value;
-                console.log('Sorting by:', sortBy);
-            });
-        }
-    }, 100);
 
     return container;
 }
 
 function renderSkillsTab(skills, userSkills, capabilities) {
+    // Get filtered and sorted skills from the state management utility
+    const filteredSkills = stateUtils.getFilteredSkills(
+        state.filters.skillSearch, 
+        state.filters.categoryFilter, 
+        state.sorting.skills.field, 
+        state.sorting.skills.direction
+    );
+
     if (skills.length === 0) {
         return `
             <div class="empty-state-enhanced">
@@ -285,13 +319,10 @@ function renderSkillsTab(skills, userSkills, capabilities) {
         `;
     }
 
-    // Group skills by category for better organization
+    // Group the filtered skills by category for better organization
     const skillsByCategory = capabilities.map(category => ({
         ...category,
-        skills: skills.filter(skill => skill.capability_id === category.id).map(skill => ({
-            ...skill,
-            userSkill: userSkills.find(us => us.skill_id === skill.id)
-        }))
+        skills: filteredSkills.filter(skill => skill.capability_id === category.id)
     })).filter(category => category.skills.length > 0);
 
     return `
@@ -308,21 +339,36 @@ function renderSkillsTab(skills, userSkills, capabilities) {
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <div class="field has-addons">
-                                <div class="control">
-                                    <div class="select">
-                                        <select id="skill-sort">
-                                            <option value="score">Sort by Score</option>
-                                            <option value="name">Sort by Name</option>
-                                            <option value="category">Sort by Category</option>
-                                        </select>
+                            <div class="skills-controls">
+                                <div class="field has-addons">
+                                    <div class="control has-icons-left">
+                                        <input 
+                                            class="input" 
+                                            type="text" 
+                                            id="skill-search" 
+                                            placeholder="Search skills..."
+                                            data-search-type="skills"
+                                            value="${state.filters.skillSearch || ''}"
+                                        >
+                                        <span class="icon is-left">
+                                            <i class="fas fa-search"></i>
+                                        </span>
                                     </div>
-                                </div>
-                                <div class="control">
-                                    <button class="button is-primary" data-action="open-skill-modal" data-id="new">
-                                        <span class="icon"><i class="fas fa-plus"></i></span>
-                                        <span>Add Skill</span>
-                                    </button>
+                                    <div class="control">
+                                        <div class="select">
+                                            <select id="skill-sort" data-action="sort-skills">
+                                                <option value="name" ${state.sorting.skills.field === 'name' ? 'selected' : ''}>Sort by Name</option>
+                                                <option value="score" ${state.sorting.skills.field === 'score' ? 'selected' : ''}>Sort by Score</option>
+                                                <option value="category" ${state.sorting.skills.field === 'category' ? 'selected' : ''}>Sort by Category</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-primary" data-action="open-skill-modal" data-id="new">
+                                            <span class="icon"><i class="fas fa-plus"></i></span>
+                                            <span>Add Skill</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -350,7 +396,7 @@ function renderSkillsTab(skills, userSkills, capabilities) {
                                     <div class="level-item">
                                         <div class="category-stats">
                                             <span class="stat-pill">
-                                                Avg: ${Math.round(category.skills.reduce((sum, skill) => sum + (skill.userSkill?.score || 0), 0) / category.skills.length)}
+                                                Avg: ${Math.round(category.skills.reduce((sum, skill) => sum + (skill.score || 0), 0) / category.skills.length)}
                                             </span>
                                         </div>
                                     </div>
@@ -360,7 +406,7 @@ function renderSkillsTab(skills, userSkills, capabilities) {
                         
                         <div class="skills-grid">
                             ${category.skills.map(skill => {
-                                const score = skill.userSkill?.score || 0;
+                                const score = skill.score || 0;
                                 const scoreLevel = score >= 80 ? 'expert' : score >= 60 ? 'intermediate' : 'beginner';
                                 return `
                                     <div class="skill-card ${scoreLevel}" data-skill="${skill.id}">
@@ -369,10 +415,10 @@ function renderSkillsTab(skills, userSkills, capabilities) {
                                                 <i class="${skill.icon || 'fas fa-code'}"></i>
                                             </div>
                                             <div class="skill-actions">
-                                                <button class="action-btn edit" data-action="edit-skill" data-id="${skill.id}" title="Edit skill">
+                                                <button class="action-btn edit" data-action="edit-skill" data-id="${skill.id}" title="Edit skill" aria-label="Edit ${skill.name}">
                                                     <i class="fas fa-pencil-alt"></i>
                                                 </button>
-                                                <button class="action-btn delete" data-action="delete-skill" data-id="${skill.id}" title="Delete skill">
+                                                <button class="action-btn delete" data-action="delete-skill" data-id="${skill.id}" title="Delete skill" aria-label="Delete ${skill.name}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -405,6 +451,8 @@ function renderSkillsTab(skills, userSkills, capabilities) {
 }
 
 function renderProjectsTab(projects, skills) {
+    const filteredProjects = stateUtils.getFilteredProjects(state.filters.projectSearch);
+    
     return `
         <div class="projects-section">
             <div class="projects-header">
@@ -419,10 +467,29 @@ function renderProjectsTab(projects, skills) {
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <button class="button is-primary" data-action="open-project-modal" data-id="new">
-                                <span class="icon"><i class="fas fa-plus"></i></span>
-                                <span>Add Project</span>
-                            </button>
+                            <div class="projects-controls">
+                                <div class="field has-addons">
+                                    <div class="control has-icons-left">
+                                        <input 
+                                            class="input" 
+                                            type="text" 
+                                            id="project-search" 
+                                            placeholder="Search projects..."
+                                            data-search-type="projects"
+                                            value="${state.filters.projectSearch || ''}"
+                                        >
+                                        <span class="icon is-left">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-primary" data-action="open-project-modal" data-id="new">
+                                            <span class="icon"><i class="fas fa-plus"></i></span>
+                                            <span>Add Project</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -486,7 +553,7 @@ function renderProjectsTab(projects, skills) {
                 </div>
             ` : `
                 <div class="projects-grid">
-                    ${projects.map(project => {
+                    ${filteredProjects.map(project => {
                         const linkedSkills = project.project_skills || [];
                         const skillNames = linkedSkills.map(ps => {
                             const skill = skills.find(s => s.id === ps.skill_id);
@@ -494,21 +561,21 @@ function renderProjectsTab(projects, skills) {
                         }).filter(name => name);
 
                         return `
-                            <div class="project-card">
+                            <article class="project-card" data-project="${project.id}">
                                 <div class="project-card-header">
                                     <div class="project-info">
                                         <h3 class="project-title">${project.title}</h3>
                                         ${project.url ? `
-                                            <a href="${project.url}" target="_blank" class="project-url" title="View project">
+                                            <a href="${project.url}" target="_blank" rel="noopener noreferrer" class="project-url" title="View project" aria-label="View ${project.title}">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         ` : ''}
                                     </div>
                                     <div class="project-actions">
-                                        <button class="action-btn edit" data-action="edit-project" data-id="${project.id}" title="Edit project">
+                                        <button class="action-btn edit" data-action="edit-project" data-id="${project.id}" title="Edit project" aria-label="Edit ${project.title}">
                                             <i class="fas fa-pencil-alt"></i>
                                         </button>
-                                        <button class="action-btn delete" data-action="delete-project" data-id="${project.id}" title="Delete project">
+                                        <button class="action-btn delete" data-action="delete-project" data-id="${project.id}" title="Delete project" aria-label="Delete ${project.title}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -528,7 +595,7 @@ function renderProjectsTab(projects, skills) {
                                         </div>
                                     ` : ''}
                                 </div>
-                            </div>
+                            </article>
                         `;
                     }).join('')}
                 </div>
@@ -539,6 +606,8 @@ function renderProjectsTab(projects, skills) {
 
 function renderProfileTab(profile, user, skills, avgScore) {
     const publicLink = `${window.location.origin}${window.location.pathname}#/view/${user?.id || 'demo-user-123'}`;
+    const profileCompleteness = calculateProfileCompleteness(profile, skills);
+    
     return `
         <div class="profile-section">
             <div class="profile-grid">
@@ -547,6 +616,7 @@ function renderProfileTab(profile, user, skills, avgScore) {
                         <div class="profile-avatar">
                             <div class="avatar-placeholder">
                                 <i class="fas fa-user"></i>
+                                <div class="avatar-status ${profile?.is_public ? 'public' : 'private'}"></div>
                             </div>
                         </div>
                         <div class="profile-info">
@@ -557,18 +627,34 @@ function renderProfileTab(profile, user, skills, avgScore) {
                                     <i class="fas fa-${profile?.is_public ? 'globe' : 'lock'}"></i>
                                     ${profile?.is_public ? 'Public' : 'Private'} Portfolio
                                 </span>
+                                <span class="completeness-indicator">
+                                    <i class="fas fa-chart-pie"></i>
+                                    ${profileCompleteness}% Complete
+                                </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="profile-form-section">
-                        <h3 class="title is-4 mb-4">Profile Settings</h3>
+                        <h3 class="title is-4 mb-4">
+                            <span class="icon-text">
+                                <span class="icon has-text-primary"><i class="fas fa-user-edit"></i></span>
+                                <span>Profile Settings</span>
+                            </span>
+                        </h3>
                         <form id="profile-form">
                             <div class="field-group">
                                 <div class="field">
                                     <label class="label">Full Name</label>
                                     <div class="control has-icons-left">
-                                        <input class="input is-large" name="full_name" value="${profile?.full_name || ''}" placeholder="Your full name">
+                                        <input 
+                                            class="input is-large" 
+                                            name="full_name" 
+                                            value="${profile?.full_name || ''}" 
+                                            placeholder="Your full name"
+                                            maxlength="100"
+                                            required
+                                        >
                                         <span class="icon is-left"><i class="fas fa-user"></i></span>
                                     </div>
                                 </div>
@@ -576,7 +662,13 @@ function renderProfileTab(profile, user, skills, avgScore) {
                                 <div class="field">
                                     <label class="label">Professional Bio</label>
                                     <div class="control">
-                                        <textarea class="textarea" name="bio" placeholder="Tell your professional story... What drives you? What are you passionate about? What makes you unique?" rows="5">${profile?.bio || ''}</textarea>
+                                        <textarea 
+                                            class="textarea" 
+                                            name="bio" 
+                                            placeholder="Tell your professional story... What drives you? What are you passionate about? What makes you unique?" 
+                                            rows="5"
+                                            maxlength="1000"
+                                        >${profile?.bio || ''}</textarea>
                                     </div>
                                     <p class="help">This will appear on your public portfolio. Make it compelling and authentic.</p>
                                 </div>
@@ -629,7 +721,7 @@ function renderProfileTab(profile, user, skills, avgScore) {
                             </div>
 
                             <div class="share-actions">
-                                <a href="${publicLink}" target="_blank" class="button is-light is-fullwidth mb-3">
+                                <a href="${publicLink}" target="_blank" rel="noopener noreferrer" class="button is-light is-fullwidth mb-3">
                                     <span class="icon"><i class="fas fa-external-link-alt"></i></span>
                                     <span>Preview Portfolio</span>
                                 </a>
@@ -645,29 +737,54 @@ function renderProfileTab(profile, user, skills, avgScore) {
                     </div>
 
                     <div class="portfolio-stats">
-                        <h4 class="title is-6 mb-3">Portfolio Health</h4>
+                        <h4 class="title is-6 mb-3">
+                            <span class="icon-text">
+                                <span class="icon has-text-info"><i class="fas fa-chart-bar"></i></span>
+                                <span>Portfolio Health</span>
+                            </span>
+                        </h4>
                         <div class="health-metrics">
                             <div class="health-metric">
                                 <span class="metric-label">Skills Added</span>
-                                <span class="metric-value ${skills.length > 0 ? 'good' : 'poor'}">${skills.length}/10+</span>
+                                <span class="metric-value ${skills.length >= 5 ? 'good' : skills.length >= 2 ? 'okay' : 'poor'}">
+                                    ${skills.length}/10+
+                                </span>
                             </div>
                             <div class="health-metric">
                                 <span class="metric-label">Bio Completed</span>
-                                <span class="metric-value ${profile?.bio && profile.bio.length > 50 ? 'good' : 'poor'}">${profile?.bio && profile.bio.length > 50 ? '✓' : '✗'}</span>
+                                <span class="metric-value ${profile?.bio && profile.bio.length > 50 ? 'good' : 'poor'}">
+                                    ${profile?.bio && profile.bio.length > 50 ? '✓' : '✗'}
+                                </span>
                             </div>
                             <div class="health-metric">
                                 <span class="metric-label">Public Status</span>
-                                <span class="metric-value ${profile?.is_public ? 'good' : 'poor'}">${profile?.is_public ? '✓' : '✗'}</span>
+                                <span class="metric-value ${profile?.is_public ? 'good' : 'poor'}">
+                                    ${profile?.is_public ? '✓' : '✗'}
+                                </span>
                             </div>
+                            <div class="health-metric">
+                                <span class="metric-label">Projects Added</span>
+                                <span class="metric-value ${state.projects.length >= 3 ? 'good' : state.projects.length >= 1 ? 'okay' : 'poor'}">
+                                    ${state.projects.length}/3+
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="health-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${profileCompleteness}%"></div>
+                            </div>
+                            <p class="progress-text">${profileCompleteness}% Complete</p>
                         </div>
                         
                         <div class="health-tips">
                             <h5 class="title is-7 mb-2">Improvement Tips:</h5>
                             <ul class="tip-list">
-                                ${skills.length < 5 ? '<li>Add more skills to showcase your expertise</li>' : ''}
-                                ${!profile?.bio || profile.bio.length < 50 ? '<li>Write a compelling professional bio</li>' : ''}
-                                ${!profile?.is_public ? '<li>Make your portfolio public to increase visibility</li>' : ''}
-                                ${avgScore < 60 ? '<li>Update your skill scores to reflect current abilities</li>' : ''}
+                                ${skills.length < 5 ? '<li><i class="fas fa-lightbulb"></i> Add more skills to showcase your expertise</li>' : ''}
+                                ${!profile?.bio || profile.bio.length < 50 ? '<li><i class="fas fa-pencil-alt"></i> Write a compelling professional bio</li>' : ''}
+                                ${!profile?.is_public ? '<li><i class="fas fa-globe"></i> Make your portfolio public to increase visibility</li>' : ''}
+                                ${avgScore < 60 ? '<li><i class="fas fa-chart-line"></i> Update your skill scores to reflect current abilities</li>' : ''}
+                                ${state.projects.length < 3 ? '<li><i class="fas fa-project-diagram"></i> Add more projects to demonstrate your work</li>' : ''}
                             </ul>
                         </div>
                     </div>
@@ -675,4 +792,30 @@ function renderProfileTab(profile, user, skills, avgScore) {
             </div>
         </div>
     `;
+}
+
+// Helper function to calculate profile completeness
+function calculateProfileCompleteness(profile, skills) {
+    let completeness = 0;
+    const maxScore = 100;
+    
+    // Name (20%)
+    if (profile?.full_name && profile.full_name.trim().length > 0) completeness += 20;
+    
+    // Bio (25%)
+    if (profile?.bio && profile.bio.length > 50) completeness += 25;
+    
+    // Skills (30%)
+    if (skills.length >= 5) completeness += 30;
+    else if (skills.length >= 2) completeness += 20;
+    else if (skills.length >= 1) completeness += 10;
+    
+    // Public status (15%)
+    if (profile?.is_public) completeness += 15;
+    
+    // Projects (10%)
+    if (state.projects.length >= 3) completeness += 10;
+    else if (state.projects.length >= 1) completeness += 5;
+    
+    return Math.min(completeness, maxScore);
 }
