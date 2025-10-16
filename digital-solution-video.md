@@ -7,51 +7,62 @@ color: #e2e8f0
 style: |
   section {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85rem;
   }
   h1 {
     color: #3b82f6;
-    font-size: 2.5rem;
+    font-size: 2rem;
     border-bottom: 3px solid #3b82f6;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
   }
   h2 {
     color: #60a5fa;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
   }
   h3 {
     color: #93c5fd;
-    font-size: 1.4rem;
-  }
-  ul {
     font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+  ul, ol {
+    font-size: 0.85rem;
+    margin: 0.3rem 0;
+  }
+  li {
+    margin: 0.2rem 0;
   }
   code {
     background: #1e293b;
-    padding: 0.2rem 0.5rem;
+    padding: 0.15rem 0.4rem;
     border-radius: 4px;
     color: #10b981;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
   }
   pre {
     background: #1e293b;
-    padding: 1rem;
-    border-radius: 8px;
-    border-left: 4px solid #3b82f6;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border-left: 3px solid #3b82f6;
+    font-size: 0.7rem;
+    margin: 0.4rem 0;
   }
   table {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
+  }
+  p {
+    margin: 0.3rem 0;
   }
 ---
 
 # PortfolioHub
 ## Digital Solution Video
 
-**SACE Number: [YOUR SACE NUMBER]**
+**SACE Number: 563369H**
 **Duration: 8-10 Minutes**
 
 ---
-
-<!-- Introduction Section - 1 minute -->
 
 # Introduction (1 minute)
 
@@ -61,7 +72,7 @@ style: |
 
 ### The Problem
 Students and professionals struggle to:
-- **Organize and present their skills** in a structured way
+- **Organize and present skills** in a structured way
 - **Track skill proficiency levels** over time
 - **Link skills to real projects** for evidence-based portfolios
 - **Share portfolios** easily with employers and educators
@@ -76,24 +87,22 @@ Students and professionals struggle to:
 ## Target Audience
 
 ### Primary Users
-1. **High School Students**
-   - Building portfolios for SACE/university applications
-   - Tracking skills across subjects and projects
-   - Sharing achievements with teachers/mentors
+**1. High School Students**
+- Building portfolios for SACE/university applications
+- Tracking skills across subjects and projects
+- Sharing achievements with teachers/mentors
 
-2. **University Students & Early Career Professionals**
-   - Creating digital portfolios for job applications
-   - Demonstrating project experience with linked skills
-   - Sharing portfolios with recruiters
+**2. University Students & Early Career Professionals**
+- Creating digital portfolios for job applications
+- Demonstrating project experience with linked skills
+- Sharing portfolios with recruiters
 
 ---
 
 ## Client Research Evidence
 
 ### Client Consultation
-**Met with:** [Client Name - Teacher/Student/Professional]
-**Date:** [Date]
-**Method:** [Email/Video Call/Interview]
+**Met with:** Mr Smart | **Date:** 14/10/2025 | **Method:** Interview
 
 ### Key Findings from Client
 - Need for **visual skill representation** (not just text lists)
@@ -108,83 +117,43 @@ Students and professionals struggle to:
 
 ---
 
-<!-- Planning Section - 3 minutes -->
-
 # Planning (3 minutes)
 
 ---
 
 ## Mind Map & Feature Breakdown
 
-### Core Problem Areas (Abstraction)
 ```
 Portfolio Management Problem
-├── User Authentication
-│   ├── Sign up / Sign in
-│   └── Secure user isolation
-├── Skill Management
-│   ├── Add/Edit/Delete skills
-│   ├── Categorize by capability
-│   ├── Score tracking (0-100)
-│   └── Icon selection
-├── Project Management
-│   ├── Add/Edit/Delete projects
-│   ├── Link multiple skills
-│   └── Include descriptions & URLs
-├── Visualization
-│   ├── Skill map display
-│   ├── Category analytics
-│   └── Score indicators
-└── Sharing
-    ├── Public/private toggle
-    └── Unique shareable URLs
+├── User Authentication (Sign up/in, Secure user isolation)
+├── Skill Management (Add/Edit/Delete, Categorize, Score tracking, Icons)
+├── Project Management (Add/Edit/Delete, Link skills, Descriptions/URLs)
+├── Visualization (Skill map, Category analytics, Score indicators)
+└── Sharing (Public/private toggle, Unique shareable URLs)
 ```
-
----
-
-## Functional Outcomes Breakdown
 
 ### Must Have (MVP)
 1. ✅ User authentication system
-2. ✅ CRUD operations for skills (Create, Read, Update, Delete)
-3. ✅ CRUD operations for projects
-4. ✅ Skill-to-project linking
-5. ✅ Skill score tracking (0-100 scale)
+2. ✅ CRUD operations for skills & projects
+3. ✅ Skill-to-project linking
+4. ✅ Skill score tracking (0-100 scale)
 
 ### Should Have
-6. ✅ Visual skill map with categories
-7. ✅ Public portfolio sharing
-8. ✅ Icon picker for visual customization
-
-### Could Have (Future)
-9. ⏳ Skill progression timeline
-10. ⏳ PDF export functionality
-11. ⏳ GitHub integration
+5. ✅ Visual skill map with categories
+6. ✅ Public portfolio sharing
+7. ✅ Icon picker for visual customization
 
 ---
 
 ## Flowchart: User Authentication
 
 ```
-START
-  ↓
-[User visits site]
-  ↓
-<Is authenticated?> ─NO─→ [Show Login/Signup Form]
-  |                              ↓
- YES                        [User enters credentials]
-  |                              ↓
-  |                         [Supabase Auth validates]
-  |                              ↓
-  |                         <Valid credentials?> ─NO─→ [Show error message] ─┐
-  |                              |                                             |
-  |                             YES                                            |
-  ↓                              ↓                                             |
-[Load user data] ←──────────────┘←────────────────────────────────────────────┘
-  ↓
-[Show Dashboard]
-  ↓
-END
+START → [User visits site] → <Is authenticated?>
+  ├─ YES → [Load user data] → [Show Dashboard] → END
+  └─ NO → [Show Login/Signup] → [User enters credentials]
+      → [Supabase Auth validates] → <Valid credentials?>
+         ├─ YES → [Load user data] → [Show Dashboard] → END
+         └─ NO → [Show error message] → (back to login)
 ```
 
 ---
@@ -192,39 +161,16 @@ END
 ## Flowchart: Add Skill Process
 
 ```
-START: User clicks "Add Skill"
-  ↓
-[Open skill modal form]
-  ↓
-[User fills in]:
-  - Skill name
-  - Capability category
-  - Score (0-100)
-  - Icon
-  - Description
-  ↓
-<All required fields filled?> ─NO─→ [Show validation error] ─┐
-  |                                                            |
- YES                                                           |
-  |                                                            |
-  ↓←───────────────────────────────────────────────────────────┘
-[Submit to database]
-  ↓
-[Insert into 'skills' table]
-  ↓
-[Insert into 'user_skills' table with score]
-  ↓
-<Database success?> ─NO─→ [Show error notification]
-  |
- YES
-  ↓
-[Update local state]
-  ↓
-[Refresh UI]
-  ↓
-[Show success notification]
-  ↓
-END
+START → [User clicks "Add Skill"] → [Open skill modal form]
+→ [User fills: name, category, score, icon, description]
+→ <All required fields filled?>
+   ├─ NO → [Show validation error] → (back to form)
+   └─ YES → [Submit to database]
+       → [Insert into 'skills' & 'user_skills' tables]
+       → <Database success?>
+          ├─ NO → [Show error notification] → END
+          └─ YES → [Update state] → [Refresh UI]
+              → [Show success notification] → END
 ```
 
 ---
@@ -233,30 +179,21 @@ END
 
 ```
 FUNCTION calculateCategoryScores():
-    FOR EACH capability IN capabilities:
-        SET relevantSkills = EMPTY ARRAY
+  FOR EACH capability IN capabilities:
+    SET relevantSkills = EMPTY ARRAY
 
-        FOR EACH userSkill IN userSkills:
-            SET skill = FIND skill WHERE skill.id = userSkill.skill_id
+    FOR EACH userSkill IN userSkills:
+      SET skill = FIND skill WHERE skill.id = userSkill.skill_id
+      IF skill.capability_id = capability.id THEN:
+        ADD userSkill TO relevantSkills
 
-            IF skill.capability_id = capability.id THEN:
-                ADD userSkill TO relevantSkills
-            END IF
-        END FOR
+    IF relevantSkills.length > 0 THEN:
+      SET totalScore = SUM of all relevantSkills scores
+      SET capability.score = ROUND(totalScore / relevantSkills.length)
+    ELSE:
+      SET capability.score = 0
 
-        IF relevantSkills.length > 0 THEN:
-            SET totalScore = 0
-            FOR EACH skill IN relevantSkills:
-                totalScore = totalScore + skill.score
-            END FOR
-            SET averageScore = totalScore / relevantSkills.length
-            SET capability.score = ROUND(averageScore)
-        ELSE:
-            SET capability.score = 0
-        END IF
-    END FOR
-
-    RETURN capabilities with scores
+  RETURN capabilities with scores
 END FUNCTION
 ```
 
@@ -266,208 +203,103 @@ END FUNCTION
 
 ```
 FUNCTION loadPublicPortfolio(userId):
-    SET publicData = EMPTY OBJECT
+  SET profile = DATABASE.query("SELECT * FROM profiles WHERE user_id = userId")
 
-    // Check if user profile is public
-    SET profile = DATABASE.query("SELECT * FROM profiles WHERE user_id = userId")
+  IF profile.is_public = FALSE THEN:
+    DISPLAY "This portfolio is private"
+    RETURN NULL
 
-    IF profile.is_public = FALSE THEN:
-        DISPLAY "This portfolio is private"
-        RETURN NULL
-    END IF
+  SET skills = DATABASE.query(
+    "SELECT skills.*, user_skills.score FROM skills
+     JOIN user_skills ON skills.id = user_skills.skill_id
+     WHERE user_skills.user_id = userId")
 
-    // Fetch user's skills
-    SET skills = DATABASE.query("
-        SELECT skills.*, user_skills.score
-        FROM skills
-        JOIN user_skills ON skills.id = user_skills.skill_id
-        WHERE user_skills.user_id = userId
-    ")
+  SET projects = DATABASE.query(
+    "SELECT projects.*, project_skills.skill_id FROM projects
+     LEFT JOIN project_skills ON projects.id = project_skills.project_id
+     WHERE projects.user_id = userId")
 
-    // Fetch user's projects
-    SET projects = DATABASE.query("
-        SELECT projects.*, project_skills.skill_id
-        FROM projects
-        LEFT JOIN project_skills ON projects.id = project_skills.project_id
-        WHERE projects.user_id = userId
-    ")
-
-    SET publicData.profile = profile
-    SET publicData.skills = skills
-    SET publicData.projects = projects
-
-    RETURN publicData
+  RETURN {profile, skills, projects}
 END FUNCTION
 ```
 
 ---
 
-## Page Layouts & Design
+## Page Layouts
 
 ### Dashboard Layout
 ```
-┌─────────────────────────────────────────────────┐
-│  Navbar [Logo] [Dashboard|Skill Map] [Profile▼]│
-├─────────────────────────────────────────────────┤
-│  Sidebar                  │   Main Content      │
-│  ┌──────────┐            │   ┌──────────────┐ │
-│  │ Profile  │            │   │ [Skills Tab] │ │
-│  │  Info    │            │   │ [Projects]   │ │
-│  ├──────────┤            │   └──────────────┘ │
-│  │ Public   │            │                     │
-│  │ Link     │            │   [+ Add Skill]     │
-│  └──────────┘            │                     │
-│                          │   ┌─────┬─────┬───┐ │
-│                          │   │Skill│Skill│Sk.│ │
-│                          │   │Card │Card │Ca.│ │
-│                          │   └─────┴─────┴───┘ │
-└──────────────────────────┴─────────────────────┘
+┌─────────────────────────────────────────┐
+│ Navbar [Logo] [Dashboard|Map] [Profile]│
+├────────────┬────────────────────────────┤
+│  Sidebar   │   Main Content             │
+│ ┌────────┐ │ ┌────────────────────────┐ │
+│ │Profile │ │ │[Skills Tab][Projects]  │ │
+│ │Info    │ │ └────────────────────────┘ │
+│ ├────────┤ │  [+ Add Skill]             │
+│ │Public  │ │ ┌────┬────┬────┐          │
+│ │Link    │ │ │Sk1 │Sk2 │Sk3 │          │
+│ └────────┘ │ └────┴────┴────┘          │
+└────────────┴────────────────────────────┘
+```
+
+### Skill Map View
+```
+┌─────────────────────────────────────────┐
+│ Navbar [Logo] [Dashboard|Map] [Profile]│
+├──────────┬──────────────────────────────┤
+│Analytics │ Visualization Panel          │
+│┌────────┐│ [Filter: All ▼]              │
+││Total:15││ ┌─ Frontend ─┐ ┌─ Backend ─┐ │
+││Cats: 4 ││ │JS React CSS│ │Node Python│ │
+│└────────┘│ └────────────┘ └───────────┘ │
+└──────────┴──────────────────────────────┘
 ```
 
 ---
 
-## Page Layouts: Skill Map View
+## ER Diagram
 
 ```
-┌─────────────────────────────────────────────────┐
-│  Navbar [Logo] [Dashboard|Skill Map] [Profile▼]│
-├─────────────────────────────────────────────────┤
-│  Analytics Panel   │   Visualization Panel      │
-│  ┌──────────────┐ │   ┌──────────────────────┐ │
-│  │ Total Skills │ │   │  [Filter: All ▼]     │ │
-│  │     15       │ │   ├──────────────────────┤ │
-│  ├──────────────┤ │   │                      │ │
-│  │ Categories   │ │   │  ┌─── Frontend ───┐ │ │
-│  │      4       │ │   │  │ [JS] [React]   │ │ │
-│  └──────────────┘ │   │  │ [HTML] [CSS]   │ │ │
-│                    │   │  └────────────────┘ │ │
-│  Category Cards:   │   │                      │ │
-│  ┌──────────────┐ │   │  ┌─── Backend ────┐ │ │
-│  │ Frontend     │ │   │  │ [Node] [SQL]   │ │ │
-│  │ Score: 85    │ │   │  │ [Python]       │ │ │
-│  │ Skills: 8    │ │   │  └────────────────┘ │ │
-│  └──────────────┘ │   └──────────────────────┘ │
-└────────────────────┴──────────────────────────────┘
+USERS (id, email, password) ──1:1── PROFILES (id, user_id, full_name,
+                                               bio, is_public)
+
+CAPABILITIES (id, name, icon) ──1:M── SKILLS (id, user_id, name,
+                                               capability_id, icon)
+                                         │
+                                         M:M (via USER_SKILLS)
+                                         │
+                                    USER_SKILLS (id, user_id,
+                                                 skill_id, score)
+
+PROJECTS (id, user_id, title, description, url)
+    │
+    M:M (via PROJECT_SKILLS)
+    │
+PROJECT_SKILLS (id, project_id, skill_id)
 ```
 
 ---
 
-## ER Diagram (Entity Relationship)
+## Data Dictionary: Key Tables
 
-```
-┌─────────────┐         ┌──────────────┐
-│   USERS     │         │  PROFILES    │
-│─────────────│         │──────────────│
-│ id (PK)     │────1:1──│ id (PK)      │
-│ email       │         │ user_id (FK) │
-│ password    │         │ full_name    │
-│ created_at  │         │ bio          │
-└─────────────┘         │ is_public    │
-                        └──────────────┘
-
-┌──────────────┐
-│ CAPABILITIES │
-│──────────────│
-│ id (PK)      │
-│ name         │───┐
-│ icon         │   │
-│ description  │   │ 1:Many
-└──────────────┘   │
-                   ↓
-              ┌─────────────┐         ┌──────────────┐
-              │   SKILLS    │         │ USER_SKILLS  │
-              │─────────────│         │──────────────│
-              │ id (PK)     │────M:M──│ id (PK)      │
-              │ name        │         │ user_id (FK) │
-              │ capability  │         │ skill_id(FK) │
-              │   _id (FK)  │         │ score        │
-              │ icon        │         └──────────────┘
-              │ description │
-              └─────────────┘
-                     │
-                     │ M:M
-                     ↓
-              ┌──────────────┐       ┌──────────────────┐
-              │PROJECT_SKILLS│       │    PROJECTS      │
-              │──────────────│       │──────────────────│
-              │ id (PK)      │       │ id (PK)          │
-              │ project_id   │───M:M─│ user_id (FK)     │
-              │   (FK)       │       │ title            │
-              │ skill_id(FK) │       │ description      │
-              └──────────────┘       │ url              │
-                                     │ created_at       │
-                                     └──────────────────┘
-```
-
----
-
-## Data Dictionary: profiles Table
-
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
+**profiles**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
 | id | UUID | PRIMARY KEY | Unique identifier |
-| user_id | UUID | FOREIGN KEY → users.id | Links to auth user |
+| user_id | UUID | FK → users.id | Links to auth user |
 | full_name | TEXT | NOT NULL | User's display name |
-| bio | TEXT | NULL | User's bio/description |
 | is_public | BOOLEAN | DEFAULT FALSE | Portfolio visibility |
-| created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
 
----
-
-## Data Dictionary: skills Table
-
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
+**user_skills**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
 | id | SERIAL | PRIMARY KEY | Unique identifier |
-| user_id | UUID | FOREIGN KEY → users.id | Owner of skill |
-| name | TEXT | NOT NULL | Skill name (e.g., "JavaScript") |
-| capability_id | INTEGER | FOREIGN KEY → capabilities.id | Category of skill |
-| icon | TEXT | NOT NULL | Font Awesome class |
-| description | TEXT | NULL | Skill description |
-| created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
+| user_id | UUID | FK → users.id | User who rated |
+| skill_id | INT | FK → skills.id | Skill being rated |
+| score | INT | CHECK (0-100) | Proficiency level |
 
 ---
-
-## Data Dictionary: user_skills Table
-
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique identifier |
-| user_id | UUID | FOREIGN KEY → users.id | User who rated |
-| skill_id | INTEGER | FOREIGN KEY → skills.id | Skill being rated |
-| score | INTEGER | CHECK (0-100) | Proficiency level |
-| created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
-
-**Unique Constraint:** (user_id, skill_id) - One score per user per skill
-
----
-
-## Data Dictionary: projects Table
-
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique identifier |
-| user_id | UUID | FOREIGN KEY → users.id | Project owner |
-| title | TEXT | NOT NULL | Project name |
-| description | TEXT | NULL | Project details |
-| url | TEXT | NULL | Project link/demo |
-| created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
-
----
-
-## Data Dictionary: project_skills Table
-
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique identifier |
-| project_id | INTEGER | FOREIGN KEY → projects.id | Associated project |
-| skill_id | INTEGER | FOREIGN KEY → skills.id | Skill used in project |
-
-**Purpose:** Many-to-many join table linking projects to skills
-
----
-
-<!-- Iterations Section -->
 
 # Iterations & Development Process
 
@@ -475,12 +307,12 @@ END FUNCTION
 
 ## Iteration Evidence
 
-### Version Control (GitHub)
-- **Initial commit:** Basic authentication and dashboard structure
-- **Commit 2:** Added skill CRUD operations
-- **Commit 3:** Implemented project management
-- **Commit 4:** Created skill map visualization
-- **Commit 5:** Added public sharing feature
+### Version Control
+- **Initial commit:** Authentication and dashboard structure
+- **Commit 2:** Skill CRUD operations
+- **Commit 3:** Project management
+- **Commit 4:** Skill map visualization
+- **Commit 5:** Public sharing feature
 - **Commit 6:** Enhanced UI with icon picker
 
 ### Why These Features Were Added
@@ -488,20 +320,19 @@ END FUNCTION
 - **Skill CRUD:** Core functionality for portfolio building
 - **Project linking:** User feedback requested skill-project connections
 - **Visualization:** Testing showed users wanted visual representation
-- **Public sharing:** Required for portfolio distribution to employers
+- **Public sharing:** Required for portfolio distribution
 
 ---
 
 ## Iteration: Skill Score System Evolution
 
-### Version 1: Basic Text Entry
+**Version 1: Basic Text Entry**
 ```javascript
-// Initial approach - just text
 <input type="text" name="proficiency" />
 ```
-**Problem:** Inconsistent data (users entered "good", "expert", numbers)
+**Problem:** Inconsistent data ("good", "expert", numbers)
 
-### Version 2: Dropdown Selection
+**Version 2: Dropdown Selection**
 ```javascript
 <select name="proficiency">
   <option>Beginner</option>
@@ -511,17 +342,17 @@ END FUNCTION
 ```
 **Problem:** Not granular enough, difficult to compare
 
-### Version 3: Numeric Score (Final)
+**Version 3: Numeric Score (Final)**
 ```javascript
 <input type="number" min="0" max="100" name="score" />
 ```
-**Why:** Standardized, quantifiable, enables calculations and visualizations
+**Why:** Standardized, quantifiable, enables calculations
 
 ---
 
 ## Iteration: Database Schema Changes
 
-### Original Schema (Week 1)
+**Original Schema (Week 1)**
 ```sql
 CREATE TABLE skills (
   id SERIAL PRIMARY KEY,
@@ -531,22 +362,15 @@ CREATE TABLE skills (
 );
 ```
 
-### Updated Schema (Week 3)
+**Updated Schema (Week 3)**
 ```sql
 CREATE TABLE skills (
-  id SERIAL PRIMARY KEY,
-  user_id UUID REFERENCES auth.users,
-  name TEXT NOT NULL,
-  capability_id INTEGER REFERENCES capabilities(id),
-  icon TEXT NOT NULL,
-  description TEXT
+  id SERIAL PRIMARY KEY, user_id UUID, name TEXT,
+  capability_id INT REFERENCES capabilities(id), icon TEXT
 );
-
 CREATE TABLE user_skills (
-  id SERIAL PRIMARY KEY,
-  user_id UUID REFERENCES auth.users,
-  skill_id INTEGER REFERENCES skills(id),
-  score INTEGER CHECK (score >= 0 AND score <= 100)
+  id SERIAL, user_id UUID, skill_id INT,
+  score INT CHECK (score >= 0 AND score <= 100)
 );
 ```
 **Why Changed:** Separated skill definition from user rating, added categories
@@ -555,33 +379,29 @@ CREATE TABLE user_skills (
 
 ## Iteration: UI/UX Improvements
 
-### Initial Dashboard (Version 1)
-- Simple list of skills in plain HTML table
+**Initial Dashboard (Version 1)**
+- Simple list in HTML table
 - No visual feedback for actions
 - No categorization
 
-### Current Dashboard (Version 3)
+**Current Dashboard (Version 3)**
 - Card-based layout with hover effects
-- Color-coded proficiency indicators
+- Color-coded proficiency indicators (Green 80+, Orange 60-79, Red 0-59)
 - Category filtering
 - Real-time success/error notifications
-- Icon picker modal for customization
+- Icon picker modal
 
 **User Feedback:** "Cards are much easier to scan than tables"
-**User Feedback:** "Love the color coding - I can see my strengths instantly"
 
 ---
-
-<!-- Coding and Validation Section - 6 minutes -->
 
 # Coding & Validation (6 minutes)
 
 ---
 
-## Working Prototype Walkthrough
+## Feature 1: User Authentication
 
-### Feature 1: User Authentication
-**Live Demo:**
+**Live Demo Steps:**
 1. Navigate to login page
 2. Show sign-up form with validation
 3. Create new account → Database INSERT to `auth.users`
@@ -589,9 +409,8 @@ CREATE TABLE user_skills (
 5. Sign in with credentials
 6. Show session storage in browser dev tools
 
-**Database Update Evidence:**
+**Database Evidence:**
 ```sql
--- Check new user in database
 SELECT * FROM auth.users WHERE email = 'demo@example.com';
 ```
 
@@ -599,48 +418,35 @@ SELECT * FROM auth.users WHERE email = 'demo@example.com';
 
 ## Feature 2: Add Skill with Validation
 
-**Live Demo:**
-1. Click "Add Skill" button
-2. Show modal form opening
-3. Try submitting empty form → validation error
-4. Fill in skill details:
-   - Name: "JavaScript"
-   - Category: "Frontend Development"
-   - Score: 150 → validation error (max 100)
-   - Score: 85 ✓
-   - Icon: Select from picker
-5. Submit form
-6. Show database insert in real-time
+**Live Demo Steps:**
+1. Click "Add Skill" button → modal opens
+2. Try submitting empty form → validation error
+3. Fill in skill: Name "JavaScript", Category "Frontend", Score 150 → error (max 100)
+4. Change Score to 85 ✓
+5. Select icon from picker
+6. Submit form → show database insert in real-time
 
 **Database Evidence:**
 ```sql
--- Show the INSERT that occurred
 SELECT * FROM skills WHERE name = 'JavaScript';
-SELECT * FROM user_skills WHERE skill_id = [last_insert_id];
+SELECT * FROM user_skills WHERE skill_id = [id];
 ```
 
 ---
 
 ## Feature 3: Link Skill to Project
 
-**Live Demo:**
+**Live Demo Steps:**
 1. Click "Add Project"
-2. Enter project details:
-   - Title: "Portfolio Website"
-   - Description: "Personal portfolio built with vanilla JS"
-   - URL: "https://example.com"
+2. Enter: Title "Portfolio Website", Description "Built with vanilla JS"
 3. Show skill checkboxes (populated from user's skills)
 4. Select multiple skills: JavaScript, HTML, CSS
-5. Submit form
-6. Show database tables updating
+5. Submit form → show database tables updating
 
 **Database Evidence:**
 ```sql
--- Show project insert
 SELECT * FROM projects ORDER BY created_at DESC LIMIT 1;
-
--- Show many-to-many relationship
-SELECT * FROM project_skills WHERE project_id = [project_id];
+SELECT * FROM project_skills WHERE project_id = [id];
 ```
 
 ---
@@ -664,41 +470,34 @@ SELECT * FROM project_skills WHERE project_id = [project_id];
 ## Feature 5: Public Portfolio Sharing
 
 **Live Demo:**
-1. Toggle profile to "Public" in dashboard
-2. Show database update: `is_public = true`
-3. Copy public link
-4. Open in incognito/new browser
-5. Show public view (read-only, no edit buttons)
-6. Verify RLS: Cannot access other users' private portfolios
+1. Toggle profile to "Public" in dashboard → `is_public = true`
+2. Copy public link
+3. Open in incognito/new browser
+4. Show public view (read-only, no edit buttons)
+5. Verify RLS: Cannot access other users' private portfolios
 
 **Security Check:**
 ```sql
--- RLS Policy in action
 SELECT * FROM profiles WHERE user_id != current_user_id;
 -- Returns empty if is_public = false
 ```
 
 ---
 
-## Source Code Explanation: State Management
+## Source Code: State Management
 
 **File:** `js/state.js`
 ```javascript
 export default {
-    user: null,
-    profile: null,
-    capabilities: [],
-    skills: [],
-    userSkills: [],
-    projects: [],
-    activeDashboardTab: 'skills',
-    editingSkillId: null,
-    editingProjectId: null
+  user: null, profile: null, capabilities: [],
+  skills: [], userSkills: [], projects: [],
+  activeDashboardTab: 'skills',
+  editingSkillId: null, editingProjectId: null
 };
 ```
 
 **Purpose:**
-- **Single source of truth** for all application data
+- **Single source of truth** for all app data
 - Prevents prop drilling through components
 - Enables reactive UI updates across all views
 
@@ -709,32 +508,20 @@ export default {
 **File:** `js/services/auth.js`
 ```javascript
 export async function signUp(email, password, fullName) {
-    // Sign up user with Supabase Auth
-    const { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password
-    });
+  const { data, error } = await supabaseClient.auth.signUp({
+    email, password
+  });
+  if (error) return { error };
 
-    if (error) return { error };
-
-    // Create profile record
-    const { error: profileError } = await supabaseClient
-        .from('profiles')
-        .insert({
-            user_id: data.user.id,
-            full_name: fullName,
-            is_public: false
-        });
-
-    return { data, error: profileError };
+  const { error: profileError } = await supabaseClient
+    .from('profiles')
+    .insert({ user_id: data.user.id, full_name: fullName,
+              is_public: false });
+  return { data, error: profileError };
 }
 ```
 
-**Key Concepts:**
-- **Variable:** `data`, `error`, `profileError`
-- **If statement:** Error checking before proceeding
-- **Async/await:** Handling asynchronous database operations
-- **Function:** Reusable authentication logic
+**Key Concepts:** Variables (`data`, `error`), If statement (error checking), Async/await (database operations), Function (reusable logic)
 
 ---
 
@@ -742,62 +529,44 @@ export async function signUp(email, password, fullName) {
 
 **File:** `js/components/Dashboard.js`
 ```javascript
-// Filter skills by selected capability
 let filteredSkills = state.skills;
 
 if (selectedCapability !== 'all') {
-    filteredSkills = [];
+  filteredSkills = [];
 
-    // FOR LOOP: Iterate through all skills
-    for (let i = 0; i < state.skills.length; i++) {
-        const skill = state.skills[i];
-
-        // IF STATEMENT: Check if skill matches selected category
-        if (skill.capability_id === parseInt(selectedCapability)) {
-            filteredSkills.push(skill);
-        }
+  for (let i = 0; i < state.skills.length; i++) {
+    const skill = state.skills[i];
+    if (skill.capability_id === parseInt(selectedCapability)) {
+      filteredSkills.push(skill);
     }
+  }
 }
 ```
 
-**Concepts:**
-- **For loop:** Iterate through array
-- **If statement:** Conditional filtering
-- **Variable:** `filteredSkills` array accumulator
-- **Array method:** `.push()` to add matching items
+**Concepts:** For loop (iterate array), If statement (conditional filtering), Variable (`filteredSkills`), Array method (`.push()`)
 
 ---
 
 ## Source Code: While Loop - Data Validation
 
-**File:** `js/components/Modal.js` (conceptual example)
+**File:** `js/components/Modal.js`
 ```javascript
 function validateSkillScores(skills) {
-    let i = 0;
-    let allValid = true;
+  let i = 0, allValid = true;
 
-    // WHILE LOOP: Continue checking until all validated or error found
-    while (i < skills.length && allValid) {
-        const score = skills[i].score;
-
-        // IF STATEMENT: Check score is within valid range
-        if (score < 0 || score > 100) {
-            allValid = false;
-            console.log(`Invalid score at index ${i}: ${score}`);
-        }
-
-        i++; // INCREMENT variable
+  while (i < skills.length && allValid) {
+    const score = skills[i].score;
+    if (score < 0 || score > 100) {
+      allValid = false;
+      console.log(`Invalid score at index ${i}: ${score}`);
     }
-
-    return allValid;
+    i++;
+  }
+  return allValid;
 }
 ```
 
-**Concepts:**
-- **While loop:** Conditional iteration
-- **Variable:** `i` (counter), `allValid` (boolean flag)
-- **If statement:** Range validation
-- **Comments:** Explaining logic
+**Concepts:** While loop (conditional iteration), Variable (`i`, `allValid`), If statement (range validation), Comments (logic explanation)
 
 ---
 
@@ -806,62 +575,45 @@ function validateSkillScores(skills) {
 **File:** `js/services/api.js`
 ```javascript
 export async function fetchUserData(userId) {
-    // SQL QUERY: Join multiple tables
-    const { data: skills, error: skillsError } = await supabaseClient
-        .from('skills')
-        .select(`
-            *,
-            capabilities (
-                id,
-                name,
-                icon
-            )
-        `)
-        .eq('user_id', userId);
+  const { data: skills } = await supabaseClient
+    .from('skills')
+    .select(`*, capabilities (id, name, icon)`)
+    .eq('user_id', userId);
 
-    // ARRAY METHOD: Map to add scores
-    const skillsWithScores = skills.map(skill => {
-        const userSkill = state.userSkills.find(
-            us => us.skill_id === skill.id
-        );
-        return {
-            ...skill,
-            score: userSkill?.score || 0
-        };
-    });
-
-    return skillsWithScores;
+  const skillsWithScores = skills.map(skill => {
+    const userSkill = state.userSkills.find(
+      us => us.skill_id === skill.id
+    );
+    return { ...skill, score: userSkill?.score || 0 };
+  });
+  return skillsWithScores;
 }
 ```
 
+**Concepts:** SQL JOIN (multiple tables), Array methods (`.map()`, `.find()`), Spread operator
+
 ---
 
-## Source Code Comments Example
+## Source Code: Comments Example
 
 **File:** `js/components/SkillMap.js`
 ```javascript
 // Calculate average score for each capability category
 const categories = state.capabilities.map(cat => {
-    // STEP 1: Filter user skills that belong to this category
-    const relevantSkills = state.userSkills.filter(us => {
-        const skill = state.skills.find(s => s.id === us.skill_id);
-        return skill && skill.capability_id === cat.id;
-    });
+  // STEP 1: Filter user skills that belong to this category
+  const relevantSkills = state.userSkills.filter(us => {
+    const skill = state.skills.find(s => s.id === us.skill_id);
+    return skill && skill.capability_id === cat.id;
+  });
 
-    // STEP 2: Calculate average if skills exist
-    const score = relevantSkills.length > 0
-        ? Math.round(
-            relevantSkills.reduce((sum, s) => sum + s.score, 0)
-            / relevantSkills.length
-          )
-        : 0; // Default to 0 if no skills in this category
+  // STEP 2: Calculate average if skills exist
+  const score = relevantSkills.length > 0
+    ? Math.round(relevantSkills.reduce((sum, s) => sum + s.score, 0)
+                 / relevantSkills.length)
+    : 0; // Default to 0 if no skills
 
-    // STEP 3: Return category with calculated score
-    return {
-        ...cat,
-        score,
-        skillCount: relevantSkills.length
-    };
+  // STEP 3: Return category with calculated score
+  return { ...cat, score, skillCount: relevantSkills.length };
 }).sort((a, b) => b.score - a.score); // STEP 4: Sort by highest score
 ```
 
@@ -869,26 +621,23 @@ const categories = state.capabilities.map(cat => {
 
 ## Data Validation Walkthrough
 
-### 1. Client-Side Validation
+**1. Client-Side Validation (HTML5)**
 ```javascript
-// HTML5 built-in validation
 <input type="number" min="0" max="100" required />
 <input type="email" required />
-<input type="url" />
 ```
 
-### 2. JavaScript Validation
+**2. JavaScript Validation**
 ```javascript
 if (score < 0 || score > 100) {
-    notie.alert({ type: 'error', text: 'Score must be 0-100' });
-    return;
+  notie.alert({ type: 'error', text: 'Score must be 0-100' });
+  return;
 }
 ```
 
-### 3. Database Constraints
+**3. Database Constraints**
 ```sql
-ALTER TABLE user_skills
-ADD CONSTRAINT score_range
+ALTER TABLE user_skills ADD CONSTRAINT score_range
 CHECK (score >= 0 AND score <= 100);
 ```
 
@@ -898,29 +647,22 @@ CHECK (score >= 0 AND score <= 100);
 
 ## Database Updates: Real-Time Demo
 
-### Add Skill Flow
+**Add Skill Flow**
 1. **Before:** Query `skills` table → Show count
 2. **Action:** Submit new skill via form
 3. **During:** Show network request in dev tools
 4. **After:** Query `skills` table → Count increased
 5. **UI Update:** New skill card appears without page reload
 
-### SQL Queries Demonstrated
+**SQL Queries:**
 ```sql
--- Show before
 SELECT COUNT(*) FROM skills WHERE user_id = 'xxx';
-
--- The INSERT that happens
 INSERT INTO skills (user_id, name, capability_id, icon, description)
 VALUES ('xxx', 'Python', 2, 'fab fa-python', 'Backend programming');
-
--- Show after
 SELECT * FROM skills WHERE user_id = 'xxx' ORDER BY created_at DESC;
 ```
 
 ---
-
-<!-- User Feedback Section -->
 
 # User Feedback & Iterations
 
@@ -928,17 +670,17 @@ SELECT * FROM skills WHERE user_id = 'xxx' ORDER BY created_at DESC;
 
 ## Gathering User Feedback
 
-### Method 1: Teacher/Peer Testing
-**Date:** [Date]
-**Tester:** [Name]
+**Method 1: Peer Testing**
+**Date:** 4/09/2025 | **Tester:** Aiden Tsaai
 
 **Feedback Received:**
 - "The skill map is cool but I want to see my projects too"
 - "Can you add a way to export my portfolio as PDF?"
 - "The icon picker is great, but search would be helpful"
 
-### Method 2: Online Survey
+**Method 2: Online Survey**
 **Participants:** 5 students/professionals
+
 **Key Findings:**
 - 80% wanted project-skill linking (implemented ✓)
 - 60% wanted skill progression over time (future feature)
@@ -948,17 +690,15 @@ SELECT * FROM skills WHERE user_id = 'xxx' ORDER BY created_at DESC;
 
 ## Feedback Implementation Examples
 
-### Feedback 1: "I want to see which projects use each skill"
-**Before:** Skills displayed in isolation
-**After:** Added "Used in X projects" count to skill cards
+**Feedback 1: "I want to see which projects use each skill"**
+- **Before:** Skills displayed in isolation
+- **After:** Added "Used in X projects" count to skill cards
+
 **Code Change:**
 ```javascript
-// Count projects using this skill
 const projectCount = state.projects.filter(p =>
-    p.project_skills.some(ps => ps.skill_id === skill.id)
+  p.project_skills.some(ps => ps.skill_id === skill.id)
 ).length;
-
-// Display in UI
 `<span class="tag">Used in ${projectCount} projects</span>`
 ```
 
@@ -966,18 +706,18 @@ const projectCount = state.projects.filter(p =>
 
 ## Feedback Implementation Examples
 
-### Feedback 2: "Profile link should be easier to copy"
-**Before:** User had to manually select and copy URL
-**After:** Added one-click copy button with visual feedback
+**Feedback 2: "Profile link should be easier to copy"**
+- **Before:** User had to manually select and copy URL
+- **After:** Added one-click copy button with visual feedback
+
 **Code Change:**
 ```javascript
-// Added click handler
 case 'copy-public-link':
-    const linkInput = document.getElementById('public-link-input');
-    linkInput.select();
-    document.execCommand('copy');
-    notie.alert({ type: 'success', text: 'Link copied!' });
-    break;
+  const linkInput = document.getElementById('public-link-input');
+  linkInput.select();
+  document.execCommand('copy');
+  notie.alert({ type: 'success', text: 'Link copied!' });
+  break;
 ```
 
 **Improvement:** User testing showed 100% success rate vs 60% before
@@ -986,22 +726,20 @@ case 'copy-public-link':
 
 ## Feedback Implementation Examples
 
-### Feedback 3: "Skill map is overwhelming with many skills"
-**Before:** All skills shown at once
-**After:** Added category filter dropdown
+**Feedback 3: "Skill map is overwhelming with many skills"**
+- **Before:** All skills shown at once
+- **After:** Added category filter dropdown
+
 **Code Change:**
 ```javascript
 filterSelect.addEventListener('change', (e) => {
-    const categoryId = e.target.value;
-    const categoryGroups = document.querySelectorAll('.category-group');
-
-    categoryGroups.forEach(group => {
-        if (categoryId === 'all' || group.dataset.category === categoryId) {
-            group.style.display = 'block';
-        } else {
-            group.style.display = 'none';
-        }
-    });
+  const categoryId = e.target.value;
+  const groups = document.querySelectorAll('.category-group');
+  groups.forEach(group => {
+    group.style.display =
+      (categoryId === 'all' || group.dataset.category === categoryId)
+      ? 'block' : 'none';
+  });
 });
 ```
 
@@ -1009,51 +747,39 @@ filterSelect.addEventListener('change', (e) => {
 
 ---
 
-## Iteration Story: Why Features Were Added
+## Iteration Story: Features Added
 
-### Feature: Public Portfolio Toggle
-**Initial Version:** All portfolios were public by default
-**Problem:** Users concerned about privacy while building portfolio
-**Solution:** Added `is_public` boolean field and toggle in dashboard
+**Feature: Public Portfolio Toggle**
+- **Initial:** All portfolios public by default
+- **Problem:** Users concerned about privacy while building
+- **Solution:** Added `is_public` boolean field and toggle
+- **Why:** User feedback indicated fear of sharing incomplete work
+- **When:** Week 2 of development
+- **Impact:** Increased user comfort and adoption
 
-**Why:** User feedback indicated fear of sharing incomplete work
-**When:** Week 2 of development
-**Impact:** Increased user comfort and adoption
-
-### Feature: Icon Picker Modal
-**Initial Version:** Users typed Font Awesome classes manually
-**Problem:** Users didn't know icon class names
-**Solution:** Visual icon picker with 50+ pre-configured options
-
-**Why:** User testing showed 70% error rate with manual entry
-**When:** Week 3 of development
-**Impact:** Reduced icon selection errors to 0%
+**Feature: Icon Picker Modal**
+- **Initial:** Users typed Font Awesome classes manually
+- **Problem:** Users didn't know icon class names
+- **Solution:** Visual icon picker with 50+ pre-configured options
+- **Why:** User testing showed 70% error rate with manual entry
+- **When:** Week 3 of development
+- **Impact:** Reduced icon selection errors to 0%
 
 ---
 
 ## Iteration Story: Removed Features
 
-### Removed: Skill Endorsements
-**Why added initially:** Thought users would want peer validation
-**Why removed:**
-- Added complexity to database (endorsements table)
-- Required user discovery/networking features
-- Shifted focus from core portfolio functionality
+**Removed: Skill Endorsements**
+- **Why added:** Thought users would want peer validation
+- **Why removed:** Added complexity, required user discovery features, shifted focus from core functionality
+- **Learning:** Stay focused on MVP, avoid feature creep
 
-**Learning:** Stay focused on MVP, avoid feature creep
-
-### Removed: Rich Text Editor for Descriptions
-**Why added initially:** Wanted formatted text support
-**Why removed:**
-- Large library (Quill.js) increased page load time
-- Most users wrote short descriptions (< 100 chars)
-- Plain text was sufficient
-
-**Learning:** Measure actual user behavior before adding complexity
+**Removed: Rich Text Editor**
+- **Why added:** Wanted formatted text support
+- **Why removed:** Large library (Quill.js) increased page load time, most users wrote short descriptions (< 100 chars)
+- **Learning:** Measure actual user behavior before adding complexity
 
 ---
-
-<!-- Conclusion Section -->
 
 # Summary & Reflection
 
@@ -1077,13 +803,13 @@ filterSelect.addEventListener('change', (e) => {
 
 ## Key Technical Achievements
 
-### Computational Thinking Applied
+**Computational Thinking Applied**
 - **Decomposition:** Broke portfolio problem into auth, skills, projects, visualization
 - **Pattern Recognition:** Identified CRUD pattern repeated across entities
 - **Abstraction:** Created reusable components (Modal, IconPicker)
 - **Algorithms:** Score calculation, filtering, sorting algorithms
 
-### Database Design
+**Database Design**
 - Normalized schema (3NF) eliminates redundancy
 - Many-to-many relationships enable flexible associations
 - Row Level Security ensures data isolation
@@ -1093,14 +819,14 @@ filterSelect.addEventListener('change', (e) => {
 
 ## Evidence of Iterative Development
 
-### Timeline
+**Timeline**
 - **Week 1:** Authentication + basic skill CRUD
 - **Week 2:** Added projects + skill-project linking
 - **Week 3:** Built skill map visualization
 - **Week 4:** Added public sharing + icon picker
 - **Week 5:** User testing + refinements
 
-### Key Iterations
+**Key Iterations**
 - Changed from text proficiency to numeric scores
 - Split skills into definition + user rating tables
 - Added category filtering based on user feedback
@@ -1113,43 +839,41 @@ filterSelect.addEventListener('change', (e) => {
 
 | Outcome | Evidence | Location |
 |---------|----------|----------|
-| Data persistence | Supabase PostgreSQL database | All features |
-| User authentication | Email/password with sessions | auth.js |
-| CRUD operations | Skills, projects full CRUD | api.js |
+| Data persistence | Supabase PostgreSQL | All features |
+| User authentication | Email/password sessions | auth.js |
+| CRUD operations | Skills, projects CRUD | api.js |
 | Data validation | Client, JS, DB constraints | Multiple layers |
 | Search/filter | Category filtering | SkillMap.js |
-| Relationships | Many-to-many links | project_skills table |
+| Relationships | Many-to-many links | project_skills |
 | Visualization | Skill map with scores | SkillMap.js |
-| Security | RLS policies | Supabase migrations |
+| Security | RLS policies | Migrations |
 
 ---
 
 ## What I Learned
 
-### Technical Skills
+**Technical Skills**
 - Relational database design and normalization
 - Row Level Security implementation
 - Async JavaScript and Promise handling
 - Component-based architecture
 - State management patterns
 
-### Problem Solving
+**Problem Solving**
 - Importance of user feedback early and often
 - Balance between features and complexity
 - Iterative development reduces risk
 - Documentation helps track decisions
 
-### Future Improvements
-- Add skill progression timeline
-- Implement PDF export
-- Create skill recommendation engine
-- Add GitHub integration
+**Future Improvements**
+- Add skill progression timeline | Implement PDF export
+- Create skill recommendation engine | Add GitHub integration
 
 ---
 
 ## Thank You
 
-**SACE Number: [YOUR SACE NUMBER]**
+**SACE Number: 563369H**
 
 ### Resources
 - **GitHub Repository:** [Link]
@@ -1157,4 +881,3 @@ filterSelect.addEventListener('change', (e) => {
 - **Documentation:** [Link]
 
 **Questions?**
-
